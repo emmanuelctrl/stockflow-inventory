@@ -1,0 +1,99 @@
+:root {
+  /* Color tokens */
+  --ink: #0F1115;          /* near-black slate — owner dashboard base */
+  --ink-soft: #1E293B;      /* slate — borders, secondary text on dark */
+  --paper: #FAFAF8;         /* warm white — worker scan screen base */
+  --paper-dim: #F0EEE8;
+  --line: #2A2E37;          /* hairline border on dark surfaces */
+  --line-light: #E3E0D8;    /* hairline border on light surfaces */
+
+  --signal: #FF6B35;        /* safety orange — primary action, brand accent */
+  --signal-dim: #C8501F;
+  --added: #2DD4BF;         /* teal — stock added */
+  --removed: #EF4444;       /* red — stock removed / low stock */
+
+  --text-on-dark: #F4F2EC;
+  --text-on-dark-dim: #9AA1AE;
+  --text-on-light: #15171C;
+  --text-on-light-dim: #5B5F6B;
+
+  /* Type */
+  --font-display: 'Space Grotesk', 'Arial Narrow', sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'Space Grotesk', monospace;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--ink);
+  color: var(--text-on-dark);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+
+input, select, textarea {
+  font-family: var(--font-body);
+}
+
+a {
+  color: inherit;
+}
+
+/* Visible keyboard focus everywhere */
+:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 10px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+.mono-num {
+  font-family: var(--font-mono);
+  font-feature-settings: "tnum";
+}
