@@ -1,0 +1,112 @@
+.ownerlogin {
+  min-height: 100vh;
+  background: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.ownerlogin-panel {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  background: #15171D;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 40px 32px;
+}
+
+.ownerlogin-back {
+  position: absolute;
+  top: 20px;
+  left: 24px;
+  font-size: 13px;
+  color: var(--text-on-dark-dim);
+  text-decoration: none;
+}
+
+.ownerlogin-back:hover {
+  color: var(--text-on-dark);
+}
+
+.ownerlogin-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(255, 107, 53, 0.12);
+  color: var(--signal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 16px 0 20px;
+}
+
+.ownerlogin-panel h1 {
+  font-size: 24px;
+  color: var(--text-on-dark);
+  margin-bottom: 8px;
+}
+
+.ownerlogin-sub {
+  font-size: 14px;
+  color: var(--text-on-dark-dim);
+  line-height: 1.5;
+  margin: 0 0 28px;
+}
+
+.ownerlogin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ownerlogin-form label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-on-dark-dim);
+}
+
+.ownerlogin-form input {
+  background: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 13px 14px;
+  font-size: 16px;
+  letter-spacing: 0.2em;
+  color: var(--text-on-dark);
+  margin-bottom: 8px;
+}
+
+.ownerlogin-form input:focus {
+  border-color: var(--signal);
+}
+
+.ownerlogin-error {
+  font-size: 13.5px;
+  color: var(--removed);
+  margin: 0 0 4px;
+}
+
+.ownerlogin-form button {
+  background: var(--signal);
+  color: #1a0e08;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 13px;
+  font-weight: 600;
+  font-size: 15px;
+  margin-top: 4px;
+  transition: background 0.15s ease, opacity 0.15s ease;
+}
+
+.ownerlogin-form button:hover:not(:disabled) {
+  background: #ff7c4d;
+}
+
+.ownerlogin-form button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
