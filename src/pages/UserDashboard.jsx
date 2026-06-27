@@ -5,12 +5,14 @@ import { api } from '../lib/api';
 import ProductModal from '../components/ProductModal';
 import OwnerScanModal from '../components/OwnerScanModal';
 import ScanFeed from '../components/ScanFeed';
+import ExcelImportModal from '../components/ExcelImportModal';
 import './OwnerDashboard.css';
+import './UserDashboard.css';
 
 const POLL_INTERVAL = 4000;
 
-export default function OwnerDashboard() {
-  const { token, logout } = useAuth();
+export default function UserDashboard() {
+  const { userToken, user, userLogout } = useAuth();
   const navigate = useNavigate();
 
   const [products, setProducts] = useState([]);
@@ -21,11 +23,15 @@ export default function OwnerDashboard() {
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [modalState, setModalState] = useState({ open: false, product: null });
   const [scanModalOpen, setScanModalOpen] = useState(false);
+  const [importModalOpen, setImportModalOpen] = useState(false);
   const [actionError, setActionError] = useState(null);
 
   const loadData = useCallback(async () => {
     try {
-      const [prods, log] = await Promise.all([api.getProducts(token), api.getScanLog(token, 40)]);
+      const [prods, log] = await Promise.all([
+        api.getProducts(userToken),
+        api.getScanLog(userToken, 40)
+      ]);
       setProducts(prods);
       setScanLog(log);
       setError(null);
@@ -34,12 +40,9 @@ export default function OwnerDashboard() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [userToken]);
 
   useEffect(() => {
-    // Intentional: fetch on mount, then poll. This is a standard data-fetching
-    // effect (see https://react.dev/learn/you-might-not-need-an-effect#fetching-data),
-    // not a state-derivation effect, so the synchronous setState inside loadData is expected.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     loadData();
     const interval = setInterval(loadData, POLL_INTERVAL);
@@ -76,9 +79,9 @@ export default function OwnerDashboard() {
     setActionError(null);
     try {
       if (modalState.product) {
-        await api.updateProduct(token, modalState.product.id, formData);
+        await api.updateProduct(userToken, modalState.product.id, formData);
       } else {
-        await api.createProduct(token, formData);
+        await api.createProduct(userToken, formData);
       }
       setModalState({ open: false, product: null });
       loadData();
@@ -90,7 +93,7 @@ export default function OwnerDashboard() {
   async function handleDeleteProduct(product) {
     if (!window.confirm(`Remove "${product.name}" from inventory? This can't be undone.`)) return;
     try {
-      await api.deleteProduct(token, product.id);
+      await api.deleteProduct(userToken, product.id);
       loadData();
     } catch (err) {
       setActionError(err.message);
@@ -98,7 +101,7 @@ export default function OwnerDashboard() {
   }
 
   function handleLogout() {
-    logout();
+    userLogout();
     navigate('/');
   }
 
@@ -113,9 +116,12 @@ export default function OwnerDashboard() {
             <line x1="65" y1="30" x2="65" y2="70" stroke="var(--signal)" strokeWidth="4" />
           </svg>
           <span className="owner-header-title">StockFlow</span>
-          <span className="owner-header-badge">Owner</span>
+          {user?.picture && (
+            <img className="user-avatar" src={user.picture} alt={user.name} title={user.email} referrerPolicy="no-referrer" />
+          )}
+          {user?.name && <span className="user-name">{user.name}</span>}
         </div>
-        <button className="owner-logout" onClick={handleLogout}>Log out</button>
+        <button className="owner-logout" onClick={handleLogout}>Sign out</button>
       </header>
 
       <main className="owner-main">
@@ -155,6 +161,9 @@ export default function OwnerDashboard() {
               <button className="panel-scan-btn" onClick={() => setScanModalOpen(true)}>
                 📷 Scan to add stock
               </button>
+              <button className="panel-import-btn" onClick={() => setImportModalOpen(true)}>
+                ⬆ Import Excel
+              </button>
               <button className="panel-add-btn" onClick={() => setModalState({ open: true, product: null })}>
                 + Add product
               </button>
@@ -169,7 +178,7 @@ export default function OwnerDashboard() {
               ) : filteredProducts.length === 0 ? (
                 <p className="panel-empty">
                   {products.length === 0
-                    ? 'No products yet. Add one, or use "Scan to add stock" above.'
+                    ? 'No products yet. Add one, import from Excel, or scan a barcode.'
                     : 'No products match your search.'}
                 </p>
               ) : (
@@ -214,7 +223,7 @@ export default function OwnerDashboard() {
 
           <section className="owner-panel owner-panel--feed">
             <h2 className="panel-title">Live activity</h2>
-            <p className="panel-subtitle">Updates automatically as workers scan</p>
+            <p className="panel-subtitle">Updates automatically as stock changes</p>
             <ScanFeed entries={scanLog} />
           </section>
         </div>
@@ -231,9 +240,17 @@ export default function OwnerDashboard() {
 
       {scanModalOpen && (
         <OwnerScanModal
-          token={token}
+          token={userToken}
           onClose={() => setScanModalOpen(false)}
           onChanged={loadData}
+        />
+      )}
+
+      {importModalOpen && (
+        <ExcelImportModal
+          token={userToken}
+          onClose={() => setImportModalOpen(false)}
+          onImported={loadData}
         />
       )}
     </div>

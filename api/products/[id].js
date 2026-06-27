@@ -1,5 +1,5 @@
 import { sql, ensureSchema, rowToProduct } from '../_lib/db.js';
-import { setCors, handleOptions, requireOwner } from '../_lib/auth.js';
+import { setCors, handleOptions, requireUser } from '../_lib/auth.js';
 
 export default async function handler(req, res) {
   setCors(res);
@@ -9,10 +9,10 @@ export default async function handler(req, res) {
   const { id } = req.query;
 
   if (req.method === 'PUT') {
-    const owner = requireOwner(req, res);
-    if (!owner) return;
+    const user = requireUser(req, res);
+    if (!user) return;
 
-    const existing = await sql`SELECT * FROM products WHERE id = ${id}`;
+    const existing = await sql`SELECT * FROM products WHERE id = ${id} AND user_id = ${user.userId}`;
     if (existing.length === 0) return res.status(404).json({ error: 'Product not found' });
 
     const current = rowToProduct(existing[0]);
@@ -38,17 +38,17 @@ export default async function handler(req, res) {
         unit_price = ${updated.unitPrice},
         barcode = ${updated.barcode},
         updated_at = now()
-      WHERE id = ${id}
+      WHERE id = ${id} AND user_id = ${user.userId}
       RETURNING *
     `;
     return res.json(rowToProduct(rows[0]));
   }
 
   if (req.method === 'DELETE') {
-    const owner = requireOwner(req, res);
-    if (!owner) return;
+    const user = requireUser(req, res);
+    if (!user) return;
 
-    const result = await sql`DELETE FROM products WHERE id = ${id} RETURNING id`;
+    const result = await sql`DELETE FROM products WHERE id = ${id} AND user_id = ${user.userId} RETURNING id`;
     if (result.length === 0) return res.status(404).json({ error: 'Product not found' });
     return res.json({ success: true });
   }

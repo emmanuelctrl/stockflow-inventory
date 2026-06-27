@@ -1,0 +1,74 @@
+.glogin {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  padding: 1rem;
+}
+
+.glogin-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.glogin-back {
+  align-self: flex-start;
+  font-size: 0.8rem;
+  color: var(--muted);
+  text-decoration: none;
+  margin-bottom: 0.5rem;
+}
+.glogin-back:hover { color: var(--fg); }
+
+.glogin-logo {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--signal) 12%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.glogin-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--fg);
+  text-align: center;
+  margin: 0;
+}
+
+.glogin-sub {
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-align: center;
+  margin: 0 0 0.75rem;
+  line-height: 1.5;
+}
+
+.glogin-btn-wrap {
+  margin-top: 0.5rem;
+}
+
+.glogin-status {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+.glogin-error {
+  font-size: 0.85rem;
+  color: #e05c5c;
+  text-align: center;
+  margin: 0;
+}
