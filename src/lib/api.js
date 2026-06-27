@@ -26,11 +26,12 @@ async function request(path, { method = 'GET', body, token } = {}) {
 export const api = {
   // auth
   ownerLogin: (password) => request('/api/owner/login', { method: 'POST', body: { password } }),
+  googleAuth: (credential) => request('/api/auth/google', { method: 'POST', body: { credential } }),
   changeOwnerPassword: (token, currentPassword, newPassword) =>
     request('/api/owner/change-password', { method: 'POST', token, body: { currentPassword, newPassword } }),
 
   // products
-  getProducts: () => request('/api/products'),
+  getProducts: (token) => request('/api/products', { token }),
   getProductByBarcode: (barcode) => request(`/api/products/barcode/${encodeURIComponent(barcode)}`),
   createProduct: (token, product) => request('/api/products', { method: 'POST', token, body: product }),
   updateProduct: (token, id, updates) => request(`/api/products/${id}`, { method: 'PUT', token, body: updates }),
@@ -40,8 +41,11 @@ export const api = {
   scanLookup: (barcode) => request('/api/scan/lookup', { method: 'POST', body: { barcode } }),
   scanAdjust: (payload, token) => request('/api/scan/adjust', { method: 'POST', token, body: payload }),
 
+  // bulk import
+  importProducts: (token, products) => request('/api/products/import', { method: 'POST', token, body: { products } }),
+
   // activity
-  getScanLog: (limit = 50) => request(`/api/scan-log?limit=${limit}`)
+  getScanLog: (token, limit = 50) => request(`/api/scan-log?limit=${limit}`, { token })
 };
 
 export { API_BASE };

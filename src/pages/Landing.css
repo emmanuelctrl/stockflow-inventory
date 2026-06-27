@@ -103,6 +103,14 @@
   border-color: var(--added);
 }
 
+.landing-card--google:hover {
+  border-color: #4285f4;
+}
+
+.landing-card--google .landing-card-cta {
+  color: #4285f4;
+}
+
 .landing-card-tag {
   font-family: var(--font-mono);
   font-size: 12px;

@@ -32,10 +32,17 @@ export default function Landing() {
         </div>
 
         <div className="landing-cards">
+          <Link to="/login" className="landing-card landing-card--google">
+            <span className="landing-card-tag">My Inventory</span>
+            <h2>Sign in with Google</h2>
+            <p>Your private inventory workspace. Import from Excel, track stock, and manage products.</p>
+            <span className="landing-card-cta">Sign in →</span>
+          </Link>
+
           <Link to="/owner" className="landing-card landing-card--owner">
             <span className="landing-card-tag">Owner</span>
-            <h2>View inventory &amp; reports</h2>
-            <p>Full product list, stock levels, and live scan activity. Password protected.</p>
+            <h2>Password dashboard</h2>
+            <p>Legacy owner dashboard with full inventory access. Password protected.</p>
             <span className="landing-card-cta">Enter dashboard →</span>
           </Link>
 

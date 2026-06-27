@@ -19,16 +19,29 @@ export function ensureSchema() {
 
   initPromise = (async () => {
     await sql`
+      CREATE TABLE IF NOT EXISTS users (
+        id TEXT PRIMARY KEY,
+        google_id TEXT UNIQUE NOT NULL,
+        email TEXT NOT NULL,
+        name TEXT,
+        picture TEXT,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+      )
+    `;
+
+    await sql`
       CREATE TABLE IF NOT EXISTS products (
         id TEXT PRIMARY KEY,
-        barcode TEXT UNIQUE NOT NULL,
+        barcode TEXT NOT NULL,
         name TEXT NOT NULL,
         sku TEXT DEFAULT '',
         quantity INTEGER NOT NULL DEFAULT 0,
         low_stock_threshold INTEGER NOT NULL DEFAULT 5,
         category TEXT DEFAULT 'General',
         unit_price NUMERIC NOT NULL DEFAULT 0,
-        updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        user_id TEXT REFERENCES users(id) ON DELETE CASCADE,
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+        UNIQUE(barcode, user_id)
       )
     `;
 
@@ -42,6 +55,7 @@ export function ensureSchema() {
         quantity_change INTEGER NOT NULL,
         resulting_quantity INTEGER NOT NULL,
         actor TEXT NOT NULL DEFAULT 'worker',
+        user_id TEXT,
         created_at TIMESTAMPTZ NOT NULL DEFAULT now()
       )
     `;
@@ -59,15 +73,6 @@ export function ensureSchema() {
       const bcrypt = await import('bcryptjs');
       const hash = bcrypt.default.hashSync('192121', 10);
       await sql`INSERT INTO settings (key, value) VALUES ('owner_password_hash', ${hash})`;
-    }
-
-    // Seed one sample product if the table is empty, so the dashboard isn't blank on first load.
-    const productCount = await sql`SELECT COUNT(*)::int AS count FROM products`;
-    if (productCount[0].count === 0) {
-      await sql`
-        INSERT INTO products (id, barcode, name, sku, quantity, low_stock_threshold, category, unit_price)
-        VALUES ('sample-001', '012345678905', 'Sample Product', 'SP-001', 25, 5, 'General', 0)
-      `;
     }
   })();
 
